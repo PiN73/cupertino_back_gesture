@@ -3,6 +3,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+// This file is a modified copy of Flutter's cupertino `route.dart`
+// allowing to change the width of area where back swipe gesture is accepted
+// through [BackGestureWidthTheme].
+
 import 'dart:async';
 import 'dart:math';
 import 'dart:ui' show lerpDouble;
@@ -13,7 +17,9 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter/animation.dart' show Curves;
 
-const double _kBackGestureWidth = 20.0;
+import 'back_gesture_width_theme.dart';
+
+const double _kDefaultBackGestureWidth = 20.0;
 const double _kMinFlingVelocity = 1.0; // Screen widths per second.
 
 // An eyeballed value for the maximum time it takes for a page to animate forward
@@ -542,6 +548,15 @@ class _CupertinoBackGestureDetectorState<T> extends State<_CupertinoBackGestureD
     return null;
   }
 
+  /// Width of the area where start of back swipe gesture should be recognised
+  double get _backGestureWidth {
+    final theme = BackGestureWidthTheme.of(context);
+    if (theme?.backGestureWidth != null) {
+      return theme.backGestureWidth(() => MediaQuery.of(context).size);
+    }
+    return _kDefaultBackGestureWidth;
+  }
+
   @override
   Widget build(BuildContext context) {
     assert(debugCheckHasDirectionality(context));
@@ -550,7 +565,7 @@ class _CupertinoBackGestureDetectorState<T> extends State<_CupertinoBackGestureD
     double dragAreaWidth = Directionality.of(context) == TextDirection.ltr ?
                            MediaQuery.of(context).padding.left :
                            MediaQuery.of(context).padding.right;
-    dragAreaWidth = max(dragAreaWidth, _kBackGestureWidth);
+    dragAreaWidth = max(dragAreaWidth, _backGestureWidth);
     return Stack(
       fit: StackFit.passthrough,
       children: <Widget>[
