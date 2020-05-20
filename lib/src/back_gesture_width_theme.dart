@@ -7,6 +7,8 @@ typedef BackGestureWidthGetter = double Function(ValueGetter<Size>);
 
 /// [BackGestureWidthGetter] builders
 class BackGestureWidth {
+  const BackGestureWidth._();
+
   /// Always returns same value equals to [width]
   static BackGestureWidthGetter fixed(double width) => (_) => width;
 
@@ -26,7 +28,7 @@ class BackGestureWidthTheme extends InheritedWidget {
   final BackGestureWidthGetter backGestureWidth;
 
   static BackGestureWidthTheme of(BuildContext context) =>
-      context.inheritFromWidgetOfExactType(BackGestureWidthTheme);
+      context.dependOnInheritedWidgetOfExactType<BackGestureWidthTheme>();
 
   @override
   bool updateShouldNotify(BackGestureWidthTheme oldWidget) =>
