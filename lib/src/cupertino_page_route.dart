@@ -636,7 +636,7 @@ class _CupertinoBackGestureController<T> {
     @required this.controller,
   }) : assert(navigator != null),
        assert(controller != null) {
-    navigator.didStartUserGesture();
+    //navigator.didStartUserGesture();
   }
 
   final AnimationController controller;
@@ -695,12 +695,12 @@ class _CupertinoBackGestureController<T> {
       // depends on userGestureInProgress.
       AnimationStatusListener animationStatusCallback;
       animationStatusCallback = (AnimationStatus status) {
-        navigator.didStopUserGesture();
+        //navigator.didStopUserGesture();
         controller.removeStatusListener(animationStatusCallback);
       };
       controller.addStatusListener(animationStatusCallback);
     } else {
-      navigator.didStopUserGesture();
+      //navigator.didStopUserGesture();
     }
   }
 }
