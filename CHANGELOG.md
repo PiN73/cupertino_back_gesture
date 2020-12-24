@@ -1,3 +1,7 @@
+## [0.0.4]
+
+Apply changes from Flutter v1.22.5
+
 ## [0.0.3]
 
 Apply changes from Flutter v1.17.1
