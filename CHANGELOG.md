@@ -1,3 +1,7 @@
+## [0.0.4+1]
+
+Fix compilation error for newer Flutter versions
+
 ## [0.0.4]
 
 Apply changes from Flutter v1.22.5

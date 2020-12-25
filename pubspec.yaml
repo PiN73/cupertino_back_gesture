@@ -1,6 +1,6 @@
 name: cupertino_back_gesture
 description: A package to set custom width of iOS back swipe gesture area.
-version: 0.0.4
+version: 0.0.4+1
 homepage: https://github.com/PiN73/cupertino_back_gesture
 
 environment:
