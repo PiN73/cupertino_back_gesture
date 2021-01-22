@@ -628,40 +628,23 @@ class _CupertinoBackGestureDetector<T> extends StatefulWidget {
 class _CupertinoBackGestureDetectorState<T> extends State<_CupertinoBackGestureDetector<T>> {
   _CupertinoBackGestureController<T> _backGestureController;
 
-  HorizontalDragGestureRecognizer _recognizer;
-
-  @override
-  void initState() {
-    super.initState();
-    _recognizer = HorizontalDragGestureRecognizer(debugOwner: this)
-      ..onStart = _handleDragStart
-      ..onUpdate = _handleDragUpdate
-      ..onEnd = _handleDragEnd
-      ..onCancel = _handleDragCancel;
+  void _handleDragStart(DragStartDetails details, double dragAreaWidth) {
+    if (details.localPosition.dx < dragAreaWidth && widget.enabledCallback()) {
+      assert(mounted);
+      assert(_backGestureController == null);
+      _backGestureController = widget.onStartPopGesture();
+    }
   }
 
-  @override
-  void dispose() {
-    _recognizer.dispose();
-    super.dispose();
-  }
-
-  void _handleDragStart(DragStartDetails details) {
+  void _handleDragUpdate(DragUpdateDetails details, double dragAreaWidth) {
     assert(mounted);
-    assert(_backGestureController == null);
-    _backGestureController = widget.onStartPopGesture();
+     _backGestureController?.dragUpdate(
+        _convertToLogical(details.primaryDelta / context.size.width));
   }
 
-  void _handleDragUpdate(DragUpdateDetails details) {
+  void _handleDragEnd(DragEndDetails details, double dragAreaWidth) {
     assert(mounted);
-    assert(_backGestureController != null);
-    _backGestureController.dragUpdate(_convertToLogical(details.primaryDelta / context.size.width));
-  }
-
-  void _handleDragEnd(DragEndDetails details) {
-    assert(mounted);
-    assert(_backGestureController != null);
-    _backGestureController.dragEnd(_convertToLogical(details.velocity.pixelsPerSecond.dx / context.size.width));
+    _backGestureController?.dragEnd(_convertToLogical(details.velocity.pixelsPerSecond.dx / context.size.width));
     _backGestureController = null;
   }
 
@@ -671,11 +654,6 @@ class _CupertinoBackGestureDetectorState<T> extends State<_CupertinoBackGestureD
     // that we don't consider here.
     _backGestureController?.dragEnd(0.0);
     _backGestureController = null;
-  }
-
-  void _handlePointerDown(PointerDownEvent event) {
-    if (widget.enabledCallback())
-      _recognizer.addPointer(event);
   }
 
   double _convertToLogical(double value) {
@@ -706,21 +684,14 @@ class _CupertinoBackGestureDetectorState<T> extends State<_CupertinoBackGestureD
                            MediaQuery.of(context).padding.left :
                            MediaQuery.of(context).padding.right;
     dragAreaWidth = max(dragAreaWidth, _backGestureWidth);
-    return Stack(
-      fit: StackFit.passthrough,
-      children: <Widget>[
-        widget.child,
-        PositionedDirectional(
-          start: 0.0,
-          width: dragAreaWidth,
-          top: 0.0,
-          bottom: 0.0,
-          child: Listener(
-            onPointerDown: _handlePointerDown,
-            behavior: HitTestBehavior.translucent,
-          ),
-        ),
-      ],
+    return GestureDetector(
+      onHorizontalDragEnd: (details) => _handleDragEnd(details, dragAreaWidth),
+      onHorizontalDragStart: (details) =>
+          _handleDragStart(details, dragAreaWidth),
+      onHorizontalDragUpdate: (details) =>
+          _handleDragUpdate(details, dragAreaWidth),
+      onHorizontalDragCancel: _handleDragCancel,
+      child: widget.child,
     );
   }
 }
@@ -746,7 +717,7 @@ class _CupertinoBackGestureController<T> {
     @required this.controller,
   }) : assert(navigator != null),
        assert(controller != null) {
-    navigator.didStartUserGesture();
+    //navigator.didStartUserGesture();
   }
 
   final AnimationController controller;
@@ -805,12 +776,12 @@ class _CupertinoBackGestureController<T> {
       // depends on userGestureInProgress.
       AnimationStatusListener animationStatusCallback;
       animationStatusCallback = (AnimationStatus status) {
-        navigator.didStopUserGesture();
+        //navigator.didStopUserGesture();
         controller.removeStatusListener(animationStatusCallback);
       };
       controller.addStatusListener(animationStatusCallback);
     } else {
-      navigator.didStopUserGesture();
+      //navigator.didStopUserGesture();
     }
   }
 }
