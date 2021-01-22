@@ -636,13 +636,13 @@ class _CupertinoBackGestureDetectorState<T> extends State<_CupertinoBackGestureD
     }
   }
 
-  void _handleDragUpdate(DragUpdateDetails details, double dragAreaWidth) {
+  void _handleDragUpdate(DragUpdateDetails details) {
     assert(mounted);
      _backGestureController?.dragUpdate(
         _convertToLogical(details.primaryDelta / context.size.width));
   }
 
-  void _handleDragEnd(DragEndDetails details, double dragAreaWidth) {
+  void _handleDragEnd(DragEndDetails details) {
     assert(mounted);
     _backGestureController?.dragEnd(_convertToLogical(details.velocity.pixelsPerSecond.dx / context.size.width));
     _backGestureController = null;
@@ -685,11 +685,11 @@ class _CupertinoBackGestureDetectorState<T> extends State<_CupertinoBackGestureD
                            MediaQuery.of(context).padding.right;
     dragAreaWidth = max(dragAreaWidth, _backGestureWidth);
     return GestureDetector(
-      onHorizontalDragEnd: (details) => _handleDragEnd(details, dragAreaWidth),
+      onHorizontalDragEnd: (details) => _handleDragEnd(details),
       onHorizontalDragStart: (details) =>
           _handleDragStart(details, dragAreaWidth),
       onHorizontalDragUpdate: (details) =>
-          _handleDragUpdate(details, dragAreaWidth),
+          _handleDragUpdate(details),
       onHorizontalDragCancel: _handleDragCancel,
       child: widget.child,
     );
