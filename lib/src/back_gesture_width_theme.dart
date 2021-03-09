@@ -20,14 +20,14 @@ class BackGestureWidth {
 /// Applies a [backGestureWidth] to descendant widgets.
 class BackGestureWidthTheme extends InheritedWidget {
   const BackGestureWidthTheme({
-    Key key,
+    Key? key,
     this.backGestureWidth,
-    Widget child,
+    required Widget child,
   }) : super(key: key, child: child);
 
-  final BackGestureWidthGetter backGestureWidth;
+  final BackGestureWidthGetter? backGestureWidth;
 
-  static BackGestureWidthTheme of(BuildContext context) =>
+  static BackGestureWidthTheme? of(BuildContext context) =>
       context.dependOnInheritedWidgetOfExactType<BackGestureWidthTheme>();
 
   @override
