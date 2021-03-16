@@ -21,7 +21,6 @@ import 'package:flutter/animation.dart' show Curves;
 
 import 'back_gesture_width_theme.dart';
 
-const double _kDefaultBackGestureWidth = 20.0;
 const double _kMinFlingVelocity = 1.0; // Screen widths per second.
 
 // An eyeballed value for the maximum time it takes for a page to animate forward
@@ -690,11 +689,8 @@ class _CupertinoBackGestureDetectorState<T> extends State<_CupertinoBackGestureD
 
   /// Width of the area where start of back swipe gesture should be recognised
   double get _backGestureWidth {
-    final theme = BackGestureWidthTheme.of(context);
-    if (theme?.backGestureWidth != null) {
-      return theme!.backGestureWidth!(() => MediaQuery.of(context).size);
-    }
-    return _kDefaultBackGestureWidth;
+    final backGestureWidth = BackGestureWidthTheme.of(context);
+    return backGestureWidth(() => MediaQuery.of(context).size);
   }
 
   @override

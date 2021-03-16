@@ -1,5 +1,8 @@
 import 'package:flutter/widgets.dart';
 
+// from cupertino_page_route.dart
+const double _kDefaultBackGestureWidth = 20.0;
+
 /// Calculates width of area where back swipe gesture is accepted
 /// in logical pixels
 /// (optionally) based on the screen size
@@ -21,14 +24,20 @@ class BackGestureWidth {
 class BackGestureWidthTheme extends InheritedWidget {
   const BackGestureWidthTheme({
     Key? key,
-    this.backGestureWidth,
+    required this.backGestureWidth,
     required Widget child,
   }) : super(key: key, child: child);
 
-  final BackGestureWidthGetter? backGestureWidth;
+  final BackGestureWidthGetter backGestureWidth;
 
-  static BackGestureWidthTheme? of(BuildContext context) =>
-      context.dependOnInheritedWidgetOfExactType<BackGestureWidthTheme>();
+  static final BackGestureWidthGetter _kDefaultTheme =
+      BackGestureWidth.fixed(_kDefaultBackGestureWidth);
+
+  static BackGestureWidthGetter of(BuildContext context) {
+    final inheritedTheme =
+        context.dependOnInheritedWidgetOfExactType<BackGestureWidthTheme>();
+    return inheritedTheme?.backGestureWidth ?? _kDefaultTheme;
+  }
 
   @override
   bool updateShouldNotify(BackGestureWidthTheme oldWidget) =>
