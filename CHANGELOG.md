@@ -1,3 +1,9 @@
+## [0.1.0]
+
+Migrate to null safety
+
+Apply changes from Flutter v2.0.2
+
 ## [0.0.4+1]
 
 Fix compilation error for newer Flutter versions
