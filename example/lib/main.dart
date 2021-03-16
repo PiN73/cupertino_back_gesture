@@ -51,7 +51,7 @@ class MainPage extends StatelessWidget {
         title: Text('Cupertino back gesture'),
       ),
       body: Center(
-        child: RaisedButton(
+        child: ElevatedButton(
           child: Text('Push other page'),
           onPressed: () {
             Navigator.of(context).push(

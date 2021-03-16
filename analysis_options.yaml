@@ -1,0 +1,7 @@
+analyzer:
+  strong-mode:
+    implicit-casts: false
+    implicit-dynamic: false
+  errors:
+    # https://github.com/flutter/flutter/blob/8962f6dc68ec8e2206ac2fa874da4a453856c7d3/packages/flutter/analysis_options.yaml#L8
+    unnecessary_null_comparison: false # Turned off until null-safe rollout is complete.
