@@ -627,40 +627,22 @@ class _CupertinoBackGestureDetector<T> extends StatefulWidget {
 class _CupertinoBackGestureDetectorState<T> extends State<_CupertinoBackGestureDetector<T>> {
   _CupertinoBackGestureController<T>? _backGestureController;
 
-  late HorizontalDragGestureRecognizer _recognizer;
-
-  @override
-  void initState() {
-    super.initState();
-    _recognizer = HorizontalDragGestureRecognizer(debugOwner: this)
-      ..onStart = _handleDragStart
-      ..onUpdate = _handleDragUpdate
-      ..onEnd = _handleDragEnd
-      ..onCancel = _handleDragCancel;
-  }
-
-  @override
-  void dispose() {
-    _recognizer.dispose();
-    super.dispose();
-  }
-
-  void _handleDragStart(DragStartDetails details) {
-    assert(mounted);
-    assert(_backGestureController == null);
-    _backGestureController = widget.onStartPopGesture();
-  }
+  void _handleDragStart(DragStartDetails details, double dragAreaWidth) {
+     if (details.localPosition.dx < dragAreaWidth && widget.enabledCallback()) {
+       assert(mounted);
+       assert(_backGestureController == null);
+       _backGestureController = widget.onStartPopGesture();
+     }
+   }
 
   void _handleDragUpdate(DragUpdateDetails details) {
     assert(mounted);
-    assert(_backGestureController != null);
-    _backGestureController!.dragUpdate(_convertToLogical(details.primaryDelta! / context.size!.width));
+    _backGestureController?.dragUpdate(_convertToLogical(details.primaryDelta! / context.size!.width));
   }
 
   void _handleDragEnd(DragEndDetails details) {
     assert(mounted);
-    assert(_backGestureController != null);
-    _backGestureController!.dragEnd(_convertToLogical(details.velocity.pixelsPerSecond.dx / context.size!.width));
+    _backGestureController?.dragEnd(_convertToLogical(details.velocity.pixelsPerSecond.dx / context.size!.width));
     _backGestureController = null;
   }
 
@@ -670,11 +652,6 @@ class _CupertinoBackGestureDetectorState<T> extends State<_CupertinoBackGestureD
     // that we don't consider here.
     _backGestureController?.dragEnd(0.0);
     _backGestureController = null;
-  }
-
-  void _handlePointerDown(PointerDownEvent event) {
-    if (widget.enabledCallback())
-      _recognizer.addPointer(event);
   }
 
   double _convertToLogical(double value) {
@@ -701,22 +678,13 @@ class _CupertinoBackGestureDetectorState<T> extends State<_CupertinoBackGestureD
                            MediaQuery.of(context).padding.left :
                            MediaQuery.of(context).padding.right;
     dragAreaWidth = max(dragAreaWidth, _backGestureWidth);
-    return Stack(
-      fit: StackFit.passthrough,
-      children: <Widget>[
-        widget.child,
-        PositionedDirectional(
-          start: 0.0,
-          width: dragAreaWidth,
-          top: 0.0,
-          bottom: 0.0,
-          child: Listener(
-            onPointerDown: _handlePointerDown,
-            behavior: HitTestBehavior.translucent,
-          ),
-        ),
-      ],
-    );
+    return GestureDetector(
+       onHorizontalDragEnd: _handleDragEnd,
+       onHorizontalDragStart: (details) => _handleDragStart(details, dragAreaWidth),
+       onHorizontalDragUpdate: _handleDragUpdate,
+       onHorizontalDragCancel: _handleDragCancel,
+       child: widget.child,
+     );
   }
 }
 
